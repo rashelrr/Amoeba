@@ -601,10 +601,24 @@ class Player:
 
         current_density_est = bacteria_eaten/(average_mouth*total_distance)
 
+        '''
+        # not working solution #1 
         if x_cord == 50 and current_density_est < LOW_DENSITY:
             info_first_bit = "1"
-        #elif x_cord == 51 and info_first_bit == "1" and current_density_est < LOW_DENSITY:
-            #info_first_bit = "0"
+        elif x_cord == 49 and info_first_bit == "1":
+            info_first_bit = "0"
+        '''
+
+        '''
+        # not working solution #2
+        if x_cord == 50 and info_first_bit == "0" and current_density_est < LOW_DENSITY and (self.current_size < self.goal_size / 3):
+            info_first_bit = "1"
+        elif x_cord == 50 and info_first_bit == "1" and (self.current_size > self.goal_size / 3 and self.current_size < self.goal_size * 2 / 3):
+            info_first_bit = "0"
+        elif x_cord == 50 and info_first_bit == "0" and (self.current_size > self.goal_size * 2 / 3):
+            info_first_bit = "1"
+        '''
+
             
         # if first but is flipped, flip the desired shape to (y, x)
         if int(info_first_bit) == 1:
