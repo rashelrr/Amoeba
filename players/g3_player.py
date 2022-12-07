@@ -139,46 +139,33 @@ class Player:
 
         return out
     
-    def find_adjacent_amoeba_cells(self, x, y, amoeba_map, bacteria):
-        out = []
-        if (x, y) not in bacteria:
-            if amoeba_map[x][(y - 1) % 100] == 1:
-                out.append((x, (y - 1) % 100))
-            if amoeba_map[x][(y + 1) % 100] == 1:
-                out.append((x, (y + 1) % 100))
-            if amoeba_map[(x - 1) % 100][y] == 1:
-                out.append(((x - 1) % 100, y))
-            if amoeba_map[(x + 1) % 100][y] == 1:
-                out.append(((x + 1) % 100, y))
-
-        return out
-
     # Find shape given size of anoemba, in the form of a list of offsets from center
-    def get_desired_shape(self, shape=1):
-        # Assume base shape given size is always > 5
-        offsets = {(0,0), (0,1), (0,-1), (1,1), (1,-1)}
-        total_cells = self.current_size-5
+    def get_desired_shape(self, shape=1):        
         if shape == 0:
-            i = 2
-            j = 1
+            offsets = {(0,0), (0,1), (0,-1), (1,1), (1,-1)}
+            total_cells = self.current_size-5
+            i = 1
+            j = 2
             while total_cells > 0:
                 if total_cells < 6:
                     if total_cells > 1:
                         # If possible add evenly
-                        offsets.update({(i,j), (-i,j)})
+                        offsets.update({(i,j), (i,-j)})
                         total_cells-=2
-                        j+=1
+                        i+=1
                     else:
                         # Add last remaining to left arm
                         offsets.update({(i, j)})
                         total_cells-=1
                 else:
                     # if there are at least 6 add 3 to each side
-                    offsets.update({(i, j), (i,j+1), (i, j+2), (-i, j), (-i,j+1), (-i, j+2)})
+                    offsets.update({(i, j), (i+1,j), (i+2, j), (i, -j), (i+1,-j), (i+2, -j)})
                     total_cells -= 6
-                    i+=1
-                    j+=2
+                    i+=2
+                    j+=1
         elif shape == 1:
+            offsets = {(0,0), (0,1), (0,-1), (1,1), (1,-1)}
+            total_cells = self.current_size-5
             j = 2
             step = 0
             while total_cells > 0:
@@ -222,6 +209,169 @@ class Player:
                     j += 1
 
                 step += 1
+                total_cells-=1
+
+        elif shape == 2:
+            j = 2
+            step = 0
+            offsets = {(0,0), (0,1), (0,-1), (1,1), (1,-1)}
+            total_cells = self.current_size-5
+            while total_cells > 0:
+                if step % 14 == 0:
+                    offsets.add((1, j))
+                    total_cells-=1
+                    if total_cells > 0:
+                        offsets.add((1, -j))
+                elif step % 14 == 1:
+                    offsets.add((2, j))
+                    total_cells-=1
+                    if total_cells > 0:
+                        offsets.add((2, -j))
+                elif step % 14 == 2:
+                    offsets.add((3, j))
+                    total_cells-=1
+                    if total_cells > 0:
+                        offsets.add((3, -j))
+                    j += 1
+                elif step % 14 == 3:
+                    offsets.add((3, j))
+                    total_cells-=1
+                    if total_cells > 0:
+                        offsets.add((3, -j))
+                elif step % 14 == 4:
+                    offsets.add((4, j))
+                    total_cells-=1
+                    if total_cells > 0:
+                        offsets.add((4, -j))
+                elif step % 14 == 5:
+                    offsets.add((5, j))
+                    total_cells-=1
+                    if total_cells > 0:
+                        offsets.add((5, -j))
+                    j+=1
+                elif step % 14 == 6:
+                    offsets.add((3, j))
+                    total_cells-=1
+                    if total_cells > 0:
+                        offsets.add((3, -j))
+                elif step % 14 == 7:
+                    offsets.add((2, j))
+                    total_cells-=1
+                    if total_cells > 0:
+                        offsets.add((2, -j))
+                elif step % 14 == 8:
+                    offsets.add((1, j))
+                    total_cells-=1
+                    if total_cells > 0:
+                        offsets.add((1, -j))
+                    j+=1
+                elif step % 14 == 9:
+                    offsets.add((1, j))
+                    total_cells-=1
+                    if total_cells > 0:
+                        offsets.add((1, -j))
+                elif step % 14 == 10:
+                    offsets.add((0, j))
+                    total_cells-=1
+                    if total_cells > 0:
+                        offsets.add((0, -j))
+                    j+=1
+                elif step % 14 == 11:
+                    offsets.add((0, j))
+                    total_cells-=1
+                    if total_cells > 0:
+                        offsets.add((0, -j))
+                    j+=1
+                elif step % 14 == 12:
+                    offsets.add((0, j))
+                    total_cells-=1
+                    if total_cells > 0:
+                        offsets.add((0, -j))
+                elif step % 14 == 13:
+                    offsets.add((1, j))
+                    total_cells-=1
+                    if total_cells > 0:
+                        offsets.add((1, -j))
+                    j+=1
+                total_cells -= 1
+                step += 1
+
+        # Not sure if correct, 5 wide tooth gap with 3 units of offset
+        elif shape == 3:
+            offsets = {(0,0), (0,1), (0,-1), (1,1), (1,-1)}
+            total_cells = self.current_size-5
+            j = 2
+            i = 1
+            step = 0
+            while total_cells > 0:
+                ###################### Add 3 long arm
+                if step % 11 == 0:
+                    offsets.add((i, j))
+                    total_cells-=1
+                    if total_cells > 0:
+                        offsets.add((i, -j))
+                elif step % 11 == 1:
+                    offsets.add((i+1, j))
+                    total_cells-=1
+                    if total_cells > 0:
+                        offsets.add((i+1, -j))
+                elif step % 11 == 2:
+                    offsets.add((i+2, j))
+                    total_cells-=1
+                    if total_cells > 0:
+                        offsets.add((i+2, -j))
+                ######################
+                ###################### Add 3 long offset arm
+                elif step % 11 == 3:
+                    offsets.add((i-1, j))
+                    total_cells-=1
+                    if total_cells > 0:
+                        offsets.add((i-1, -j))
+                elif step % 11 == 4:
+                    offsets.add((i-2, j))
+                    total_cells-=1
+                    if total_cells > 0:
+                        offsets.add((i-2, -j))
+                elif step % 11 == 5:
+                    offsets.add((i-3, j))
+                    total_cells-=1
+                    if total_cells > 0:
+                        offsets.add((i-3, -j))
+                ######################
+                ###################### Recreate inital offsets at new positions
+                elif step % 11 == 6:
+                    offsets.add((i-3, j+1))
+                    total_cells-=1
+                    if total_cells > 0:
+                        offsets.add((i-3, -(j+1)))
+                elif step % 11 == 7:
+                    offsets.add((i-4, j+1))
+                    total_cells-=1
+                    if total_cells > 0:
+                        offsets.add((i-4, -(j+1)))
+                elif step % 11 == 8:
+                    offsets.add((i-4, j+2))
+                    total_cells-=1
+                    if total_cells > 0:
+                        offsets.add((i-4, -(j+2)))
+                elif step % 11 == 9:
+                    offsets.add((i-4, j+3))
+                    total_cells-=1
+                    if total_cells > 0:
+                        offsets.add((i-4, -(j+3)))
+                elif step % 11 == 10:
+                    offsets.add((i-3, j+3))
+                    total_cells-=1
+                    if total_cells > 0:
+                        offsets.add((i-3, -(j+3)))
+                ######################
+                    # Last step increment x and y with new position to grow from
+                    j = j+4
+                    i = i-3
+
+                step += 1
+                total_cells-=1
+        
         return offsets
 
     def get_center_point(self, current_percept, info) -> int:
@@ -264,19 +414,7 @@ class Player:
                 break
 
             matching_retracts = list(potential_retracts)
-
-            # 1
             matching_retracts.sort(key=lambda p: math.dist(p, potential_extend))
-
-            # 2
-            # slows down dramatically...sometimes better/worse score
-            '''neighbors = {}
-            for retract in matching_retracts:
-                get_neighbors = self.find_adjacent_amoeba_cells(retract[0], retract[1], 
-                    self.amoeba_map, self.bacteria)
-                neighbors[retract] = len(get_neighbors)
-
-            matching_retracts = list(dict(sorted(neighbors.items(), key=lambda x: x[1])).keys())'''
 
             for i in range(len(matching_retracts)):
                 retract = matching_retracts[i]
@@ -288,8 +426,6 @@ class Player:
                     potential_extends.remove(potential_extend)
                     break
         
-        # TODO: extra bacteria handling??
-
         return retracts, extends
 
     def move(self, last_percept, current_percept, info) -> (list, list, int):
@@ -333,6 +469,8 @@ class Player:
 
         ### GET DESIRED OFFSETS FOR CURRENT MORPH ###
         desired_shape_offsets = self.get_desired_shape()
+        #print(desired_shape_offsets)
+        #exit(1)
 
 
         ### INCREMENT CENTER POINT PHASE ###
@@ -348,17 +486,29 @@ class Player:
             if self.in_formation(desired_shape_offsets, [x_cord, 50]):
                 init_phase = False
                 x_cord = 51
-        
+
+        if x_cord == 1 and int(info_first_bit) == 0:
+            x_cord = 0
+            y_cord = 49
+            info_first_bit = "1"
+        elif x_cord == 1 and int(info_first_bit) == 1:
+            y_cord = 49
+        elif x_cord != 0 and x_cord < 49:
+            y_cord = 49
+        else:
+            y_cord = 50
+
         # 2: not in initialization phase, and in formation
-        elif self.in_formation(desired_shape_offsets, [x_cord, 50], err=0.2):
+        if self.in_formation(desired_shape_offsets, [x_cord, y_cord], err=0.2):
             x_cord += 1
             x_cord %= 100
 
-
         ### MORPH PHASE ###
-        center_point = [x_cord, 50]
-        retracts, moves = self.morph(desired_shape_offsets, center_point)
+        center_point = [x_cord, y_cord]
 
+        retracts, moves = self.morph(desired_shape_offsets, center_point)
+        print("num moves : " +str(len(moves)), "num retracts : " +str(len(moves)), " x_cord " + str(x_cord) ,center_point)
+        print(moves)
         # catch error (if moves == 0, no move was made, so we should step back until we can move)
         if len(moves) == 0:
             while len(moves) == 0:
