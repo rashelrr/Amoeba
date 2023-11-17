@@ -41,8 +41,9 @@ Note: ImageMagick is needed for the video to be rendered.
 ## Usage
 
 ```bash
-python main.py
+python main.py -p 3
 ```
+Note that there are several parameters (-m for metabolism, -A for starting size of amoeba, etc.) that can be added to the above line. To find out and understand what each parameter is, look at main.py.
 
 ## Debugging
 
